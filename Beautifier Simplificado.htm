@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Beautifier com Highlight Inteligente</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/dracula.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #282a36;
+      color: #f8f8f2;
+    }
+    h1, h2 { color: #50fa7b; }
+    #editor, #output { border: 1px solid #444; height: 260px; margin-bottom: 10px; }
+    .CodeMirror {
+      height: 100%;
+      font-size: 14px;
+      border-radius: 6px;
+    }
+    #output .CodeMirror {
+      background: #1e1f29;
+      color: #f1fa8c;
+    }
+    #buttons {
+      margin-top: 10px;
+    }
+    #buttons button {
+      background: #6272a4;
+      color: #f8f8f2;
+      border: none;
+      padding: 8px 15px;
+      margin-right: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #buttons button:hover {
+      background: #50fa7b;
+      color: #282a36;
+    }
+  </style>
+</head>
+<body>
+  <h1>Beautifier Simplificado com Highlight Inteligente</h1>
+
+  <label for="editor">Cole seu código:</label>
+  <textarea id="editor">// Cole seu código JS aqui</textarea>
+
+  <label for="indentSize">Indentação (número de espaços):</label>
+  <input type="number" id="indentSize" value="2" min="0" style="width: 60px;">
+
+  <h2>Resultado formatado:</h2>
+  <textarea id="output"></textarea>
+
+  <div id="buttons">
+    <button id="copyBtn">Copiar</button>
+    <button id="saveBtn">Salvar</button>
+  </div>
+
+  <!-- CodeMirror -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
+
+  <!-- Nosso JS externo -->
+  <script>
+// Inicializa CodeMirror
+const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: 'javascript',
+  theme: 'dracula',
+  lineNumbers: true,
+  tabSize: 2
+});
+
+const output = CodeMirror.fromTextArea(document.getElementById('output'), {
+  mode: 'javascript',
+  theme: 'dracula',
+  lineNumbers: true,
+  readOnly: true
+});
+
+// Função de beautify com suporte a blocos, strings e colchetes
+function betterBeautify(code, indentSize) {
+  const indent = ' '.repeat(indentSize);
+  let formatted = '';
+  let level = 0;
+  let inString = false;
+  let stringChar = '';
+  let inBracket = 0;
+  let prevChar = '';
+
+  for (let i = 0; i < code.length; i++) {
+    const char = code[i];
+
+    if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
+      if (inString && char === stringChar) {
+        inString = false;
+      } else if (!inString) {
+        inString = true;
+        stringChar = char;
+      }
+    }
+
+    if (!inString) {
+      if (char === '{') {
+        formatted += ' {\n';
+        level++;
+        formatted += indent.repeat(level);
+        prevChar = char;
+        continue;
+      }
+      if (char === '}') {
+        formatted = formatted.trimEnd() + '\n';
+        level = Math.max(level - 1, 0);
+        formatted += indent.repeat(level) + '}';
+        if (code[i + 1] !== ';') formatted += '\n' + indent.repeat(level);
+        prevChar = char;
+        continue;
+      }
+      if (char === '[') inBracket++;
+      if (char === ']') inBracket = Math.max(inBracket - 1, 0);
+
+      if (char === ';' && inBracket === 0) {
+        formatted += ';\n' + indent.repeat(level);
+        prevChar = char;
+        continue;
+      }
+      if (char === ',' && inBracket === 0) {
+        formatted += ',\n' + indent.repeat(level);
+        prevChar = char;
+        continue;
+      }
+    }
+
+    formatted += char;
+    prevChar = char;
+  }
+
+  return formatted.trim();
+}
+
+// Verifica se o código já está formatado
+function isAlreadyFormatted(code) {
+  const lines = code.split('\n').filter(l => l.trim() !== '');
+  if (lines.length < 2) return false;
+
+  let formattedLines = 0;
+  for (let line of lines) {
+    if (/^\s{2,}/.test(line)) formattedLines++;
+  }
+
+  return formattedLines / lines.length >= 0.5;
+}
+
+// Atualiza resultado em tempo real
+function updateOutput() {
+  const code = editor.getValue();
+  const indentSize = parseInt(document.getElementById('indentSize').value, 10) || 2;
+
+  let result;
+  if (isAlreadyFormatted(code)) {
+    result = code;
+  } else {
+    result = betterBeautify(code, indentSize);
+  }
+
+  output.setValue(result);
+}
+
+// Copiar para área de transferência
+function copyToClipboard() {
+  const code = output.getValue();
+
+  // Cria textarea temporária
+  const tempTextarea = document.createElement('textarea');
+  tempTextarea.value = code;
+  document.body.appendChild(tempTextarea);
+
+  // Seleciona e copia
+  tempTextarea.select();
+  tempTextarea.setSelectionRange(0, 99999); // Para mobile
+
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      console.log('Código copiado para a área de transferência!');
+    } else {
+      alert('Não foi possível copiar o código.');
+    }
+  } catch (err) {
+    alert('Erro ao copiar: ' + err);
+  }
+
+  // Remove textarea temporária
+  document.body.removeChild(tempTextarea);
+}
+
+
+// Salvar como arquivo .js
+function saveToFile() {
+  const code = output.getValue();
+  const blob = new Blob([code], { type: 'text/javascript' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = prompt('Salvar Como...','.htm')
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Eventos
+editor.on('change', updateOutput);
+document.getElementById('indentSize').addEventListener('input', updateOutput);
+document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+document.getElementById('saveBtn').addEventListener('click', saveToFile);
+
+// Inicializa
+updateOutput();
+</script>
+</body>
+</html>
