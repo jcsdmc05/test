@@ -89,7 +89,7 @@ proc.oncontextmenu=()=>{writeText('Obrigado por aguardar, senhor'+n.value+', foi
 }, 
 REF(){ proc.value='REF P';
 proc.onclick=()=>{writeText('Peço um instante, por gentileza, senhor'+n.value+', que vou registrar a correção de faturas.');b.dataset.init=170;b.click();pomodoro_timer.scrollIntoView();}
-proc.oncontextmenu=()=>{writeText('Obrigado por aguardar, senhor'+n.value+', foi registrada a correção de faturas.\nO prazo máximo para análise e conclusão do refaturamento da fatura é de até 30 dias.\n- Este processo gerou o protocolo: **'+tel.value+'**.\n\nA fatura ficará suspensa para análise e após o recalculo de faturas ser concluído, será emitida uma nova fatura com novo valor e vencimento encaminhado por e-mail, o arquivo PDF pede uma senha de 3 dígitos iniciais do CPF do titular para abrir.');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView();return false};
+proc.oncontextmenu=()=>{writeText('Obrigado por aguardar, senhor'+n.value+', foi registrada a correção de faturas.\nO prazo máximo para análise e conclusão do refaturamento da fatura é de até 2 dias úteis.\n- Este processo gerou o protocolo: **'+tel.value+'**.\n\nA fatura ficará suspensa para análise e após o recalculo de faturas ser concluído, será emitida uma nova fatura com novo valor e vencimento encaminhado por e-mail, o arquivo PDF pede uma senha de 3 dígitos iniciais do CPF do titular para abrir.');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView();return false};
 },
 EXA(){ proc.value='EXA P';
 proc.onclick=()=>{writeText('Peço um instante, por gentileza, senhor'+n.value+', que vou registrar a vistoria de exame predial.');b.dataset.init=170;b.click();pomodoro_timer.scrollIntoView();}
@@ -114,7 +114,7 @@ T: <input id="tel" value="" type="search" autocomplete="on" oncontextmenu="this.
 	<input type="button" onclick="n.value==' ' ? writeText('Senhor(a)?') : writeText('Senhor'+n.value+'?');b.dataset.init=114;b.click();pomodoro_timer.scrollIntoView()" value="MUDO" style="font-weight: bolder; color: red; cursor: pointer; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black; border-right: 5px solid blue; border-radius: 3px;" oncontextmenu="n.value==' ' ? writeText('Senhor(a)?') : writeText('Senhor'+n.value+'?');b.dataset.init=55;b.click();pomodoro_timer.scrollIntoView();return false">
 	<input type="button" style="cursor: pointer;" onclick="writeText([`${n.value.startsWith('a') ? 'Eu posso verificar para a senhora.' : 'Eu posso verificar para o senhor.'}\nQual o seu telefone de contato, senhor${n.value}?\n> Por favor, informe no formato: **DDD + número (Exemplo: 11999999999).**`,`Além do telefone de contato informado inicialmente, possui algum telefone de contato adicional, senhor${n.value}?\n- Caso tenha, digite, por favor, no formato: **DDD + número (Exemplo: 11999999999)**.`,`Pode informar, por favor, um e-mail para contato, senhor${n.value}?`,`Qual é o seu **nome completo** e o **CPF**, por gentileza, para registro do atendimento, senhor${n.value}?`][tels.dataset.a<4 ? tels.dataset.a++ : tels.dataset.a=0]);this.value=tels.dataset.a+' TELS';b.click();pomodoro_timer.scrollIntoView()" value="TELS" id="tels" data-a="0">
 <br>
-<input type="button" style="cursor: pointer; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black; border-right: 5px solid blue; border-radius: 3px;" onclick="writeText('Obrigado pelo envio, para localizar o cadastro com mais facilidade, pode informar, por gentileza, senhor'+n.value+', **apenas um** dos seguintes códigos: do **fornecimento**, a **matrícula do hidrômetro** ou do **RGI/PDE**?');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()" value="FORN?" oncontextmenu="writeText('Pode informar, por gentileza, senhor'+n.value+', o endereço completo(**rua, número, complemento(se houver), bairro, cidade e CEP**), para encontrar com mais facilidade em sistema?');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView();return false">
+<input type="button" style="cursor: pointer; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black; border-right: 5px solid blue; border-radius: 3px;" onclick="writeText('Para localizar o cadastro com mais facilidade, pode informar, por gentileza, senhor'+n.value+', **apenas um** dos seguintes códigos: do **fornecimento**, a **matrícula do hidrômetro** ou do **RGI/PDE**?');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()" value="FORN?" oncontextmenu="writeText('Pode informar, por gentileza, senhor'+n.value+', o endereço completo(**rua, número, complemento(se houver), bairro, cidade e CEP**), para encontrar com mais facilidade em sistema?');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView();return false">
 
 <input type="button" style="cursor: pointer; color: firebrick; font-weight: bolder; border-left: 1px solid black; border-bottom: 1px solid black; border-top: 1px solid black; border-right: 5px solid blue; border-radius: 3px;" onclick="writeText('Obrigado pelas informações, senhor'+n.value+', o endereço do fornecimento é na **'+tel.value+'**?');b.click();pomodoro_timer.scrollIntoView();" value="END FORN" oncontextmenu="writeText(`Senhor${n.value}, verifiquei que atualmente recebe as faturas mensais através do leiturista. Deseja alterar a modalidade de envio das faturas, para que possa recebê-las mensalmente por e-mail?\nCerto. Obrigado pelas informações, senhor${n.value}, a modalidade de envio foi alterada.\n- Este processo gerou o protocolo: **${tel.value}**.`);b.click();pomodoro_timer.scrollIntoView();return false">
 
@@ -167,24 +167,36 @@ T: <input id="tel" value="" type="search" autocomplete="on" oncontextmenu="this.
 </form>
 
 
+<br>
 <form id="acordosparcel">
-<label for="acp" style="cursor: pointer;">Parcelamento:</label>
-<input id="acp" type="radio" name="acordo" value="o parcelamento" checked="">
+<label for="acp" style="cursor: pointer;">IPVS Alto ou Social ou Alta C.</label>
+<input id="acp" type="radio" name="acordo" value="0.05" checked="" >
 <br>
-<label for="acrp" style="cursor: pointer;">Reparcelamento: </label>
-<input id="acrp" type="radio" name="acordo" value="o reparcelamento">
+<label for="acrp" style="cursor: pointer;">IPVS Baixo: </label>
+<input id="acrp" type="radio" name="acordo" value="0.30" onclick="total.dispatchEvent(new Event('input'))">
 <br>
-<label for="act" style="cursor: pointer;">Transferência:</label>
-<input id="act" type="radio" name="acordo" value=" transferência">
-<br> T: <input id="total" type="number" placeholder="0.00" step="0.01" min="0.01" size="10">
+<label for="act" style="cursor: pointer;">Tipo: </label>
+<select style="cursor: pointer;" id="parct">
+<option value="na fatura de consumo">Parcelamento Quick</option>
+<option value="no boleto avulso">Parcelamento Carrinho</option> 
+</select><br> 
+<br> T: <input id="total" type="number" placeholder="0.00" step="0.01" min="0.01" size="10" oninput="entrada.value=((this.value*document.querySelector('input[name=acordo]:checked').value).toFixed(2)<=17.48 ? entrada.value=(this.value*0.15).toFixed(2) : (this.value*document.querySelector('input[name=acordo]:checked').value)-desc.value).toFixed(2)"><b style="color:red; cursor: pointer" onclick="desc.focus()">- D: <input style="width:12%" id="desc" value="0" type="number" step="0.01"></b>
 <br> D: <input id="data" type="date">
 <br> E: <input id="entrada" type="number" placeholder="0.00" step="0.01" min="0.01" size="10">
-<br> P: <input id="parc" type="number" placeholder="0.00" step="0.01" min="0.01" size="10">
-<input id="pcv" type="number" placeholder="0" min="1" max="36" step="1" size="1"> vezes <br>
-<input type="button" value="FEIRÃO" onclick="writeText(`Senhor${n.value}, seguem abaixo as informações referente aos parcelamentos e ao feirão de negociação:\n> **Acordos Sabesp – Feirão de Negociação 2026**\n\n> A Sabesp está com condições especiais para regularizar débitos:\n> 100% de desconto em juros e multas\n> Descontos no valor principal conforme a idade da dívida\n> Pagamento via PIX, débito, crédito (até 24x) ou boleto (até 36x para tarifa social/vulnerável)\n\n> Campanha válida de **26/01 a 31/03/2026**.\n> A negociação deve ser feita pelo **titular do fornecimento**.`);b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()" style="border: 2px red solid; color: red; font-weight: bolder; border-radius: 6px">&nbsp;
-<input type="button" value="ACORDO" onclick="writeText(`Senhor${n.value}, referente a${acordo.value} dos débitos o valor total é de R$ ${parseFloat(total.value).toFixed(2).replace('.',',')}. Este valor pode ser parcelado ou pago em uma única vez. As entradas e parcelas únicas têm a data de vencimento fixa para dois dias úteis, ou seja, vencerá no dia ${data.value.toString().split('-').reverse().join('/')}. ${(new Date().getDate())>20 && (new Date().getDate())<25 ? 'E as demais parcelas têm a data de vencimento para todo dia 25.' : 'Agora, as demais parcelas podem ser escolhidas para vencer todo dia '+(new Date().getDate() === 20 ? ([25].filter(dia => [1, 5, 10, 15, 20, 25].includes(dia)) || []) : [1, 5, 10, 15, 20, 25].filter(dia => dia >= new Date().getDate()).slice(0, -1).join(', ') + (new Date().getDate()<= [1, 5, 10, 15, 20, 25].slice(-1)[0] ? ` ou ${[1, 5, 10, 15, 20, 25].slice(-1)[0]}` : ''))}. Neste acordo em questão, a entrada está no valor de R$ ${parseFloat(entrada.value).toFixed(2).replace('.',',')}. Deseja parcelar o valor e, se sim, qual a melhor data de vencimento para as ${pcv.value} parcelas de R$ ${parseFloat(parc.value).toFixed(2).replace('.',',')}?`);b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()">
+<br> P: <input id="parc" type="number" placeholder="174.80" step="0.01" min="0.01" size="10" oninput="pcv.value=1">
+<input id="pcv" type="number" placeholder="0" min="1" step="1" size="1" oninput="parc.value=((total.value-entrada.value-desc.value)/this.value).toFixed(2);(parc.value<174.80 && document.querySelector('input[name=acordo]:checked').value==0.30) ? (this.value--,this.dispatchEvent(new Event('input'))) : '';(parc.value<17.48 && document.querySelector('input[name=acordo]:checked').value==0.05) ?  (this.value--,this.dispatchEvent(new Event('input'))) : this.max=35"> vezes <br>
+
+
+<input type="button" value="C. CRÉDITO" style="border: 2px red solid; color: red; font-weight: bolder; border-radius: 6px; cursor: pointer;" onclick="writeText(`${(n.value.startsWith('a') ? 'A' : 'O')} senhor${(n.value.startsWith('a') ? 'a ' : ' ')} não tem cartão de crédito?`);b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()">
+
+<!--<input type="button" value="FEIRÃO" onclick="writeText(`Senhor${n.value}, seguem abaixo as informações referente aos parcelamentos e ao feirão de negociação:\n> **Acordos Sabesp – Feirão de Negociação 2026**\n\n> A Sabesp está com condições especiais para regularizar débitos:\n> 100% de desconto em juros e multas\n> Descontos no valor principal conforme a idade da dívida\n> Pagamento via PIX, débito, crédito (até 24x) ou boleto (até 36x para tarifa social/vulnerável)\n\n> Campanha válida de **26/01 a 31/03/2026**.\n> A negociação deve ser feita pelo **titular do fornecimento**.`);b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()" style="border: 2px red solid; color: red; font-weight: bolder; border-radius: 6px">-->
+
+&nbsp;<input type="button" value="ACORDO" onclick="writeText('Senhor'+n.value+', referente ao parcelamento dos débitos '+parct.value+':\n> **Valor Total:** **R$ '+(total.value-desc.value).toFixed(2).replace('.',',')+(desc.value>0 ? '**   (já com desconto de **R$ '+(desc.value).replace('.',',')+'** aplicado);' : '**;')+'\n> **Forma de Pagamento:** À vista ou parcelado;\n> **Valor da Entrada do Parcelamento:** **R$ '+entrada.value.replace('.',',')+'**;\n> **Vencimento da Entrada:** **'+data.value.split('-').reverse().join('/')+' (dois dias úteis)**;\n> **Sugestão de Parcelamento:** **'+pcv.value+'** parcela'+(pcv.value>1 ? 's' : '')+' de **R$ '+parc.value.replace('.',',')+'**.\n- **Deseja que eu confirme o parcelamento?**');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()" style="cursor: pointer;">&nbsp;
+
+<input type="button" value="+VEZES" style="cursor: pointer;" onclick="pcv.value++;pcv.dispatchEvent(new Event('input'));writeText('Ou deseja a entrada de R$ '+entrada.value.replace('.',',')+' mais '+pcv.value.replace('.',',')+' parcelas de R$ '+parc.value.replace('.',',')+'?');b.dataset.init=110;b.click();pomodoro_timer.scrollIntoView()">
 </form>
 <br>
+
 <form id="deb" onsubmit="return false;">
 <label for="fat">Faturas: </label>
 <textarea id="fat" cols="24" rows="1" style="resize: none; margin-bottom: -8.1px"></textarea>
